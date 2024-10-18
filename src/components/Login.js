@@ -4,18 +4,21 @@ import { checkValidData } from "../utils/validate";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
-  const[errorMessage, setErrorMessage] = useState(null);
+   const[errorMessage, setErrorMessage] = useState(null);
 
   const name=useRef(null)
-  const email = useRef(null);
+  const email = useRef(null);//null is an initial value - reference value so we can use in JSX other than these we can use useState hook aswell
   const password = useRef(null);
 
   const handleButtonClick = () => {
     //validate the form data
-
+    // console.log(email.current.value)
+    // console.log(password.current.value)
   
-    const message = checkValidData(email.current.value, password.current.value, name.current.value);
-    setErrorMessage(message)
+    const message = checkValidData(email.current.value, password.current.value, name.current.value);//we get the value from usRef as it stores reference
+   setErrorMessage(message)
+   
+    // console.log(message)
 
     //Sign In / Sign Up
   };
