@@ -1,26 +1,78 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
-
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+//auth is centralized in firebase.js file as we have to use it multiple times (which is coming from firebase document)
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
-   const[errorMessage, setErrorMessage] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const name=useRef(null)
-  const email = useRef(null);//null is an initial value - reference value so we can use in JSX other than these we can use useState hook aswell
+  // const name = useRef(null);
+  const email = useRef(null); //null is an initial value - reference value so we can use in JSX other than these we can use useState hook aswell
   const password = useRef(null);
 
   const handleButtonClick = () => {
     //validate the form data
     // console.log(email.current.value)
     // console.log(password.current.value)
-  
-    const message = checkValidData(email.current.value, password.current.value, name.current.value);//we get the value from usRef as it stores reference
-   setErrorMessage(message)
-   
-    // console.log(message)
+
+    const message = checkValidData(
+      email.current.value,
+      password.current.value,
+      // name.current.value
+    ); //we get the value from usRef as it stores reference
+    setErrorMessage(message);
+
+    if (message) return; // if we get invalid things then it will return without goint further in the code
 
     //Sign In / Sign Up
+
+    //create a new user -- sign in / sign up
+
+    //cors extention needs to disable to get enable the email/password
+    // console.log(message)
+    if (!isSignInForm) {
+      //Sign Up logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+          // ...
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      //Sign In logic
+
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+         
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
 
   const toggleSignInForm = () => {
@@ -44,14 +96,14 @@ const Login = () => {
         <h1 className="font-bold text-3xl py-4">
           {isSignInForm ? "Sign In" : "Sign Up"}
         </h1>
-        {!isSignInForm && (
+        {/* {!isSignInForm && (
           <input
-          ref={name}
+            ref={name}
             type="text"
             placeholder="Full Name"
             className="p-4 my-4 w-full bg-gray-700"
           />
-        )}
+        )} */}
         <input
           ref={email}
           type="text"
@@ -74,8 +126,7 @@ const Login = () => {
         <p className="py-4 cursor-pointer" onClick={toggleSignInForm}>
           {isSignInForm
             ? "New to Netflix? Sign Up Now."
-            : "Already Registered? Sign In Now. "
-            }
+            : "Already Registered? Sign In Now. "}
         </p>
       </form>
     </>
