@@ -18,6 +18,8 @@
 - Fetch from TMDB Movies
 - BugFix: Sign up user displayName and profile picture update
 - Bugfix: if the user is not logged in Redirect/browse to Login Page and Vice-versa
+- Unsubscribed to the onAuthStateChanges callback
+- Add hard coded values to the constants file
 
 # Features
 -Login/ Sign Up 
